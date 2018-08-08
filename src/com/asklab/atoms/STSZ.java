@@ -5,6 +5,9 @@ import com.asklab.StreamReader;
 import com.asklab.StreamWriter;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 
 public class STSZ extends Atom {
@@ -106,8 +109,16 @@ public class STSZ extends Atom {
         m_sampleSize = stream.readValueUINT32();
         m_amountChunk = stream.readValueUINT32();
         m_chunkSize = new ArrayList<Integer>();
+        ByteBuffer data = ByteBuffer.allocate(Math.toIntExact(m_amountChunk*4));
+        stream.readBlock(data);
+        IntBuffer intBuf =
+                ByteBuffer.wrap(data.array())
+                        .order(ByteOrder.BIG_ENDIAN)
+                        .asIntBuffer();
+        int[] array = new int[intBuf.remaining()];
+        intBuf.get(array);
         for(int i=0;i<m_amountChunk;i++){
-            m_chunkSize.add(i,stream.readValueUINT32());
+            m_chunkSize.add(i,array[i]);
         }
         startPos +=m_size;
     }

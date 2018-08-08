@@ -14,7 +14,7 @@ public class Main {
             reader = new StreamReader("D:/file_03_05_2015_23-27-38.mp4");
             MP4Parser parser = new MP4Parser();
             parser.parse(reader);
-            parser.prepareData(15,45);
+            parser.prepareData(100,620);
             StreamWriter writer = new StreamWriter("D:/newfile.mp4");
             parser.writeFilePart(reader,writer);
             //long sizeAtom = reader.readSizeAtom();

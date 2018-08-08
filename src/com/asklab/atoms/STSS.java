@@ -4,6 +4,9 @@ import com.asklab.StreamReader;
 import com.asklab.StreamWriter;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 
 public class STSS extends Atom {
@@ -87,8 +90,16 @@ public class STSS extends Atom {
         m_verFlag = stream.readValueUINT32();
         m_amountChunk = stream.readValueUINT32();
         m_offsetIFrame = new ArrayList<Integer>();
+        ByteBuffer data = ByteBuffer.allocate(Math.toIntExact(m_amountChunk*4));
+        stream.readBlock(data);
+        IntBuffer intBuf =
+                ByteBuffer.wrap(data.array())
+                        .order(ByteOrder.BIG_ENDIAN)
+                        .asIntBuffer();
+        int[] array = new int[intBuf.remaining()];
+        intBuf.get(array);
         for(int i=0;i<m_amountChunk;i++){
-            m_offsetIFrame.add(i,stream.readValueUINT32());
+            m_offsetIFrame.add(i,array[i]);
         }
         m_singletonSettings.setDelta(m_singletonSettings.getDeltaVideo()+1);
         startPos +=m_size;

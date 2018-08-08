@@ -39,16 +39,24 @@ public class STSC extends Atom {
             Pair<Integer,Integer> idStartData = m_singletonSettings.getStartIdChunkAudio();
             Integer size = m_data.size();
             if(idStartData.getSecond() !=0){
-                StscData tst = new StscData();
-
-                m_data.get(0).m_firstChunk = 1;
-                m_data.get(0).m_samplesPerChunk = 4-idStartData.getSecond();//idEndData.second;
-                m_data.get(0).m_samplesIndex = 1;
-                tst.m_firstChunk = m_data.get(0).m_firstChunk+1;
-                tst.m_samplesPerChunk = 4;
-                tst.m_samplesIndex = 1;
-                m_data.add(m_amount,tst);
-                m_amount++;
+                if(size<2) {
+                    StscData tst = new StscData();
+                    m_data.get(0).m_firstChunk = 1;
+                    m_data.get(0).m_samplesPerChunk = 4 - idStartData.getSecond();//idEndData.second;
+                    m_data.get(0).m_samplesIndex = 1;
+                    tst.m_firstChunk = m_data.get(0).m_firstChunk + 1;
+                    tst.m_samplesPerChunk = 4;
+                    tst.m_samplesIndex = 1;
+                    m_data.add(m_amount, tst);
+                    m_amount++;
+                }else{
+                    m_data.get(0).m_firstChunk = 1;
+                    m_data.get(0).m_samplesPerChunk = 4 - idStartData.getSecond();//idEndData.second;
+                    m_data.get(0).m_samplesIndex = 1;
+                    m_data.get(1).m_firstChunk = 2;
+                    m_data.get(1).m_samplesPerChunk = 4;//idEndData.second;
+                    m_data.get(1).m_samplesIndex = 1;
+                }
             }
             if(idEndData.getSecond()>0)
             {
